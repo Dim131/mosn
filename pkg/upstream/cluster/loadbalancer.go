@@ -748,8 +748,14 @@ func (lb *peakEwmaLoadBalancer) randomChoose() types.Host {
 	total := lb.hosts.Size()
 
 	var candidate types.Host
+   
+   should_use_many := lb.rand.Float32() < 0.5
+   total_choices := 1
+   if should_use_many {
+      total_choices := int(lb.choice)
+   }
 
-	for i := 0; i < int(lb.choice); i++ {
+	for i := 0; i < total_choices; i++ {
 		// don't ensure uniqueness because it has high cost
 		lb.mutex.Lock()
 		idx := lb.rand.Intn(total)
